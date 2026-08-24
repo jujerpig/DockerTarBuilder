@@ -1,0 +1,27 @@
+name: Build Custom Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -t hitls-build:glibc228 .
+
+      - name: Save image
+        run: |
+          docker save hitls-build:glibc228 -o hitls-build-glibc228.tar
+          gzip hitls-build-glibc228.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hitls-build-glibc228
+          path: hitls-build-glibc228.tar.gz
